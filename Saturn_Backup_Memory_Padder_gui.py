@@ -3,7 +3,7 @@ from tkinter import filedialog, messagebox
 import os
 
 def expand_save(input_file, output_file, pad_byte):
-    """Expand a 32KB raw save to a 64KB byte-expanded format with Big Endian."""
+    # Expand a 32KB raw save to a 64KB format (alternating 0xFF padding)
     try:
         with open(input_file, "rb") as f_in, open(output_file, "wb") as f_out:
             data = f_in.read()
@@ -15,7 +15,7 @@ def expand_save(input_file, output_file, pad_byte):
         messagebox.showerror("Error", f"An error occurred: {e}")
 
 def contract_save(input_file, output_file, pad_byte):
-    """Contract a 64KB byte-expanded save to a 32KB raw format with Big Endian."""
+    # Contract a 64KB byte-expanded save to a 32KB
     try:
         with open(input_file, "rb") as f_in, open(output_file, "wb") as f_out:
             data = f_in.read()
@@ -30,24 +30,24 @@ def contract_save(input_file, output_file, pad_byte):
         messagebox.showerror("Error", f"An error occurred: {e}")
 
 def select_input_file():
-    """Open file dialog to select input file."""
+    # Open file dialog to select input file
     input_file = filedialog.askopenfilename(filetypes=[("All files", "*.*")])
     if input_file:
         input_entry.delete(0, tk.END)
         input_entry.insert(0, input_file)
 
 def select_output_file():
-    """Open file dialog to select output file."""
+    # Open file dialog to select output file
     output_file = filedialog.asksaveasfilename(defaultextension=".bin", filetypes=[("Binary Files", '*.bin'), ("MiSTer Save", "*.sav")])
     if output_file:
         output_entry.delete(0, tk.END)
         output_entry.insert(0, output_file)
 
 def on_convert():
-    """Handle the convert button click."""
+   # Handle the convert button click
     input_file = input_entry.get()
     output_file = output_entry.get()
-    pad_byte = 0x00 if pad_var.get() == "00" else 0xFF
+    pad_byte = 0xFF
 
     if not os.path.exists(input_file):
         messagebox.showerror("Error", "Input file does not exist.")
@@ -68,7 +68,7 @@ def on_convert():
 
 # Create the main window
 root = tk.Tk()
-root.title("Sega Saturn Save Converter")
+root.title("Saturn Backup Memory Padder")
 
 # Input file selection
 input_label = tk.Label(root, text="Input File:")
@@ -95,17 +95,8 @@ expand_radio.grid(row=2, column=1, padx=10, pady=5)
 contract_radio = tk.Radiobutton(root, text="Contract (64KB to 32KB)", variable=operation_var, value="contract")
 contract_radio.grid(row=2, column=2, padx=10, pady=5)
 
-# Padding byte selection
-pad_label = tk.Label(root, text="Padding Byte:")
-pad_label.grid(row=3, column=0, padx=10, pady=5)
-pad_var = tk.StringVar(value="00")
-pad_00_radio = tk.Radiobutton(root, text="0x00", variable=pad_var, value="00")
-pad_00_radio.grid(row=3, column=1, padx=10, pady=5)
-pad_ff_radio = tk.Radiobutton(root, text="MiSTer (0xFF)", variable=pad_var, value="FF")
-pad_ff_radio.grid(row=3, column=2, padx=10, pady=5)
-
 # Convert button
-convert_button = tk.Button(root, text="Convert", command=on_convert)
+convert_button = tk.Button(root, text="Execute", command=on_convert)
 convert_button.grid(row=4, column=0, columnspan=3, pady=20)
 
 # Start the GUI event loop
