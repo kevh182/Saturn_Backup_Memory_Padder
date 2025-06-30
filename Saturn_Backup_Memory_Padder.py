@@ -1,12 +1,12 @@
 import sys
 
 def expand_save(input_file, output_file):
-    """Expand a 32KB raw save to a 64KB byte-expanded format with Big Endian."""
+    # Expand a 32KB raw save file to a 64KB 'byte-expanded' format
     try:
         with open(input_file, "rb") as f_in, open(output_file, "wb") as f_out:
             data = f_in.read()
             for byte in data:
-                # Write the padding byte (0xFF) followed by the actual data byte
+                # Write the alternating padding byte (0xFF) followed by the actual data byte
                 f_out.write(b'\xFF')
                 f_out.write(bytes([byte]))
         print(f"Expanded save written to: {output_file}")
@@ -14,7 +14,7 @@ def expand_save(input_file, output_file):
         print(f"Error: {e}")
 
 def contract_save(input_file, output_file):
-    """Contract a 64KB byte-expanded save to a 32KB raw format with Big Endian."""
+    # Contract a 64KB byte-expanded save to a 32KB raw format
     try:
         with open(input_file, "rb") as f_in, open(output_file, "wb") as f_out:
             data = f_in.read()
@@ -30,16 +30,24 @@ def contract_save(input_file, output_file):
 
 if __name__ == "__main__":
     if len(sys.argv) != 4:
-        print("Usage: python saturn_save_converter.py <expand|contract> <input_file> <output_file>")
+        print("Saturn_Backup_Memory_Padder.py")
+        print("## Expand 32kb and contract 64kb Sega Saturn Memory image files ##")
+        print("")
+        print("Usage")
+        print("Expand 32kb to 64kb:")
+        print("python Saturn_Backup_Memory_Padder.py --expand <input_file> <output_file>")
+        print("")
+        print("Contract 64kb to 32kb:")
+        print("python Saturn_Backup_Memory_Padder.py --contract <input_file> <output_file>")
         sys.exit(1)
 
     operation = sys.argv[1]
     input_file = sys.argv[2]
     output_file = sys.argv[3]
 
-    if operation == "expand":
+    if operation == "--expand":
         expand_save(input_file, output_file)
-    elif operation == "contract":
+    elif operation == "--contract":
         contract_save(input_file, output_file)
     else:
         print("Invalid operation. Use 'expand' or 'contract'.")
